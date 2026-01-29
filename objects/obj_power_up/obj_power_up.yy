@@ -8,8 +8,8 @@
   "name":"obj_power_up",
   "overriddenProperties":[],
   "parent":{
-    "name":"level",
-    "path":"folders/Objects/level.yy",
+    "name":"power_up",
+    "path":"folders/Objects/power_up.yy",
   },
   "parentObjectId":null,
   "persistent":false,
