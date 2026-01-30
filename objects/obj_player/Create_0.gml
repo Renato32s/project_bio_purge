@@ -38,21 +38,23 @@ use_shield = function()
 	}
 	
 	//verificando se eu tenho escudo
-	if (instance_exists(meu_escudo)) //se tenho esculdo
+	if (instance_exists(meu_escudo)) //se tenho escudo
 	{
-		//meu esculdo segue o player
+		//meu escudo segue o player
 		meu_escudo.x = x;	//no eixo_x
 		meu_escudo.y = y;	//no eixo_y
 	}
 	else
 	{
-		meu_escudo = noone;
+		meu_escudo = noone; //se não meu escudo é noone
 	}
 }
 
 //metodo para perder vida e morrer
 perde_vida = function()
 {
+	if (instance_exists(meu_escudo)) return; //só perde vida qaundo o escudo acaba
+	
 	if (timer_invencivel > 0) return; //só perde vida se não está invencivel
 	
 	if (vidas > 1) //se a vida for maior que zero
