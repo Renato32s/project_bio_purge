@@ -2,3 +2,4 @@
 
 //variável de debug
 global.debug = true;
+

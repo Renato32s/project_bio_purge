@@ -8,8 +8,8 @@
   "name":"obj_exp_inimigo_01",
   "overriddenProperties":[],
   "parent":{
-    "name":"f_inimigo_01",
-    "path":"folders/Objects/enemies/f_inimigo_01.yy",
+    "name":"enemie_01",
+    "path":"folders/Objects/enemies/enemie_01.yy",
   },
   "parentObjectId":null,
   "persistent":false,

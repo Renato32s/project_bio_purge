@@ -1,0 +1,1 @@
+/// @description se estiver fora da room

@@ -57,7 +57,7 @@ perde_vida = function()
 	
 	if (timer_invencivel > 0) return; //só perde vida se não está invencivel
 	
-	if (vidas > 1) //se a vida for maior que zero
+	if (vidas > 1) //se a vida for maior que um
 	{
 		vidas--; //perdendo vida
 		
@@ -72,12 +72,14 @@ perde_vida = function()
 //metodo para aumentar ou diminuir o level, vidas, escudos ou sair do game
 tab_up_level = function()
 {
-	var _shift_up, _shift_down, _end_game;
+	var _shift_up, _shift_down, _reset, _end_game;
 	_shift_up	= keyboard_check_pressed(vk_up);
 	_shift_down	= keyboard_check_pressed(vk_down);
 	_end_game	= keyboard_check_pressed(vk_escape);
+	_reset		= keyboard_check_pressed(ord("R"));
 	
-	if (_end_game) game_end(); //finalizando o jogo se apertar a tecla ESC
+	if (_reset) game_restart();	//reiniciando o game
+	if (_end_game) game_end();	//finalizando o jogo se apertar a tecla ESC
 	
 	if (_shift_up)
 	{
@@ -132,16 +134,22 @@ player_control = function()
 		switch(level_shoot) //a cada level o tiro muda
 		{
 			case 1:
+			{
 				bullet_1(); //tiro padrão
-			break;
+				break;
+			}
 			
 			case 2:
+			{
 				bullet_2(); //tiro elevado 2x
-			break;
+				break;
+			}
 			
 			case 3:
+			{
 				bullet_3(); //tiro elevado 3x
-			break;
+				break;
+			}
 		}
 		
 		//resetando o timer do tiro
@@ -226,5 +234,6 @@ desenha_gui = function(_sprite, _qtd, _x_base, _y_base, _sep, _alpha = 0.6)
         desenha_sprite(_sprite, _x_base + _shift, _y_base, _alpha);
     }
 }
+
 
 #endregion
