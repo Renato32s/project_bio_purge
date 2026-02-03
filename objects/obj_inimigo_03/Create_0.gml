@@ -8,6 +8,9 @@ vida		= 10;
 vel_tiro	= 2;
 vel		= 2;
 
+//variável do efeito
+efeito = false;
+
 //variáveis de invencibilidade
 timer_invencivel = 30;
 tempo_invencivel = 0;
@@ -24,6 +27,19 @@ decide_direcao = false;
 
 //variável para controlar o estado
 estado = "chegando";
+
+//metodo para ficar branco
+ativa_efeito = function()
+{
+	efeito = 5;
+}
+reseta_efeito = function()
+{
+	if (efeito > 0)
+	{
+		efeito--;
+	}
+}
 
 //metodo de maquina de estados
 estate_machine = function()
@@ -109,7 +125,8 @@ estate_machine = function()
 		}
 	}
 	
-	tempo_invencivel--; //zerando o timer de invencibilidade	
+	tempo_invencivel--; //zerando o timer de invencibilidade
+	reseta_efeito(); //resetando o efeito
 }
 
 //metodo para atirar
@@ -148,16 +165,20 @@ atirando_02 = function()
 perde_vida = function()
 {
 	if (tempo_invencivel > 0) return; //só perde vida se o timer estiver zerado
+	ativa_efeito();
 	
 	if (vida > 1) //se vida for maior que zero
 	{
 		vida--; //perde vida
 		
 		tempo_invencivel = timer_invencivel; //ficando invencivel
+		screen_sacode(10); //balança a tela ao tomar dano
 	}
 	else //se não
 	{
+		fx_sound(sfx_explosion, .4, choose(.5, .8), 0); //chamando o som da explosão
 		instance_destroy(); //se destroi
+		screen_sacode(50); //balança a tela mais forte ao morrer
 	}
 }
 

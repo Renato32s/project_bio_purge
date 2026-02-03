@@ -1,5 +1,6 @@
 /// @description ao ser destruido
 
+
 particulas(obj_exp_inimigo_03, "inst_particulas"); //crio a particula de explosão
 
 var _chance = random(100); //variável para randomizar quando deve ser criado

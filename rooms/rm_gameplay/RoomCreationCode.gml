@@ -1,0 +1,1 @@
+fx_sound(snd_gameplay, .8, 1, 1); //tocando a musica

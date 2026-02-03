@@ -4,6 +4,13 @@
 //iniciando variável de velocidade do player
 vel = 2;
 
+//variáveis de escala
+xscale = 1;
+yscale = 1;
+
+//variável de controle do shader
+tomei_dano = false;
+
 //variáveis de vidas e escudos
 vidas			= 5;
 escudos		= 5;
@@ -21,10 +28,25 @@ wait = 10;
 tempo_invencivel = 60;
 timer_invencivel = 0;
 
+//variável de criar instancias
+create = instance_create_layer;
 
 #endregion
 
 #region metodos
+
+//metodos do shader
+shader_dano = function()
+{
+	tomei_dano = 5;
+}
+reseta_shader = function()
+{
+	if (tomei_dano > 0)
+	{
+		tomei_dano--;
+	}
+}
 
 //metodo para usar o escudo
 use_shield = function()
@@ -33,7 +55,8 @@ use_shield = function()
 	if (meu_escudo == noone)
 	if (_usa_shield and escudos >= 1)	
 	{
-		meu_escudo = instance_create_layer(x, y, "inst_escudos", obj_shield);
+		fx_sound(sfx_shield_up, .5); //som do escudo
+		meu_escudo = create(x, y, "inst_escudos", obj_shield); //criando o escudo
 		escudos--; //perdendo escudo
 	}
 	
@@ -56,16 +79,23 @@ perde_vida = function()
 	if (instance_exists(meu_escudo)) return; //só perde vida qaundo o escudo acaba
 	
 	if (timer_invencivel > 0) return; //só perde vida se não está invencivel
+	shader_dano(); //fica branco ao tomar dano
 	
 	if (vidas > 1) //se a vida for maior que um
 	{
 		vidas--; //perdendo vida
 		
 		timer_invencivel = tempo_invencivel; //ficando invencivel
+		screen_sacode(20); //balançando a tela ao tomar dano
+		
+		estica_e_puxa(2, .5); //esticando ao tomar dano
 	}
 	else //se vida for menor ou igual a 0
 	{
 		instance_destroy(); //o player morre
+		screen_sacode(70); //balando a tela mais forte ao morrer
+		transition(sq_transicao_01); //roda a sequencia
+		global.on_transition = true;
 	}
 }
 
@@ -78,7 +108,12 @@ tab_up_level = function()
 	_end_game	= keyboard_check_pressed(vk_escape);
 	_reset		= keyboard_check_pressed(ord("R"));
 	
-	if (_reset) game_restart();	//reiniciando o game
+	if (_reset) //reseta o game
+	{
+		transition(sq_transicao_01, x - 144, y - 256);	//roda a transição
+		global.on_transition = true; //está rodando a transição
+	}
+	
 	if (_end_game) game_end();	//finalizando o jogo se apertar a tecla ESC
 	
 	if (_shift_up)
@@ -130,6 +165,8 @@ player_control = function()
 	timer_shoot--;
 	if (_shoot && timer_shoot <= 0) //atirando
 	{ //se eu atirar
+		estica_e_puxa(); //esticando
+		fx_sound(sfx_laser_02, .5, choose(1, 1.2, 1.5, 1.7, 1.8), 0); //criando o som do tiro
 		
 		switch(level_shoot) //a cada level o tiro muda
 		{
@@ -162,6 +199,8 @@ player_control = function()
 	x += _vel_h; //o x é igual vel_h
 	y += _vel_v; //o y é igual vel_v
 	
+	normal_sprite(); //normaliza a sprite
+	reseta_shader(); //resetando o sahder
 	limit_player(); //impedindo o player de sair da room
 	tab_up_level();	//aumentando o level do tiro
 	use_shield();	//usando o escudo
@@ -174,46 +213,60 @@ up_level = function()
 	level_shoot = clamp(level_shoot, 1, 3); //limitando os niveis
 }
 
+//metodo estica e achata
+estica_e_puxa = function(_eixo_x = 1.3, _eixo_y = .7)
+{
+	xscale = _eixo_x;
+	yscale = _eixo_y;
+}
+
+//metodo para voltar ao normal
+normal_sprite = function()
+{
+	xscale = lerp(xscale, 1, .2);
+	yscale = lerp(yscale, 1, .2);
+}
+
 //região dos tiros
 #region level dos tiros
 //tiro no level 1
 bullet_1 = function()
 {
-	var _tiro = instance_create_layer(x, y, "inst_tiro", obj_tiro_player);
-		_tiro.vspeed			= -vel_tiro;
+	var _tiro = create(x, y - 10, "inst_tiro", obj_tiro_player);
+		_tiro.vspeed = lerp(_tiro.vspeed, -vel_tiro, .1);
 		//_tiro.direction	= image_angle;
 }
 
 //tiro no level 2
 bullet_2 = function()
 {
-	var _tiro = instance_create_layer(x - 12, y - 5, "inst_tiro", obj_tiro_player);
-		 _tiro.vspeed = -vel_tiro;
-		 _tiro = instance_create_layer(x + 12, y - 5, "inst_tiro", obj_tiro_player);
-		 _tiro.vspeed = -vel_tiro;
+	var _tiro = create(x - 12, y - 10, "inst_tiro", obj_tiro_player);
+		 _tiro.vspeed = lerp(_tiro.vspeed, -vel_tiro, .1);
+		 _tiro = create(x + 12, y - 10, "inst_tiro", obj_tiro_player);
+		 _tiro.vspeed = lerp(_tiro.vspeed, -vel_tiro, .1);
 		//_tiro.direction	= image_angle;
 }
 
 //tiro level 03
 bullet_3 = function()
 {
-	var _tiro = instance_create_layer(x, y - 2, "inst_tiro", obj_tiro_player);
-		 _tiro.vspeed = -vel_tiro - .6;
-		 _tiro = instance_create_layer(x - 12, y - 5, "inst_tiro", obj_tiro_player);
-		 _tiro.vspeed = -vel_tiro;
-		 _tiro = instance_create_layer(x + 12, y - 5, "inst_tiro", obj_tiro_player);
-		 _tiro.vspeed = -vel_tiro;
+	var _tiro = create(x, y - 10, "inst_tiro", obj_tiro_player);
+		 _tiro.vspeed = lerp(_tiro.vspeed, -vel_tiro - .1, .17);
+		 _tiro = create(x - 12, y - 10, "inst_tiro", obj_tiro_player);
+		 _tiro.vspeed = lerp(_tiro.vspeed, -vel_tiro, .1);
+		 _tiro = create(x + 12, y - 10, "inst_tiro", obj_tiro_player);
+		 _tiro.vspeed = lerp(_tiro.vspeed, -vel_tiro, .1);
 }
 
 #endregion
 
 //metodo de desenhar sprite
-desenha_sprite = function(_sprite, _gui_w = 220, _space_h = 30, _img_alpha = image_alpha)
+desenha_sprite = function(_sprite, _gui_w = 220, _space_h = 30, _img_alpha = 1)
 {
 	var _gui_h		= display_get_gui_height();
-	var _x_scale	= image_xscale;
-	var _y_scale	= image_yscale;
-	var _img_angle	= image_angle;
+	var _x_scale	= 1;
+	var _y_scale	= 1;
+	var _img_angle	= 0;
 	var _sub_image	= 0;
 	var _color		= c_white;
 	
@@ -237,3 +290,8 @@ desenha_gui = function(_sprite, _qtd, _x_base, _y_base, _sep, _alpha = 0.6)
 
 
 #endregion
+
+//chamando a sequencia
+transition(sq_transicao_02, x - 144, y - 256); //rodando a transição
+global.destino = rm_start; //definindo o destino
+global.on_transition = true; //está rodando a transição

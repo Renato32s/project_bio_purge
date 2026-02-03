@@ -4,7 +4,7 @@
 randomise();
 
 //verifica se está fora da room
-out_room = false; //iniciando com false
+//out_room = true; //iniciando com false
 
 //variável que verifica se o inimigo está em uma sequencia
 criado_na_sequencia = in_sequence;
@@ -14,7 +14,7 @@ vel		= 5;
 vel_tiro	= 6;
 
 //iniciando o alarme
-//alarm[0] = irandom_range(120, 60);
+alarm[0] = irandom_range(120, 60);
 
 //metodo para criar o tiro
 atirando = function()

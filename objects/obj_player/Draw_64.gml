@@ -1,5 +1,6 @@
 /// @description desenha na tela do game
 
+if (global.on_transition) exit; //se está em transição, sai do evento
 #region desenhando o deug
 draw_set_font(fnt_debug); //setando a fonte do debug
 //desenhando o debug do level

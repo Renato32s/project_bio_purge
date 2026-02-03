@@ -6,3 +6,6 @@ if (y <= -room_height - 32)
 	//se ele sair da tela, deve se destruir
 	instance_destroy();
 }
+
+efectos(); //efeitos do tiro
+
